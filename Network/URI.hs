@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 --------------------------------------------------------------------------------
 -- |
 --  Module      :  Network.URI
@@ -255,7 +256,11 @@ nullURIAuth = URIAuth
 --  data exposed by show.]]]
 --
 instance Show URI where
-    showsPrec _ = uriToString defaultUserInfoMap
+    showsPrec _ s s2 = (show $ uriToString defaultUserInfoMap s "") ++ s2
+
+instance Read URI where
+        readsPrec i r =   maybe []  (\res -> [(res, rem1)] ) $ parseURI x
+                where  [(x ::String , rem1)] = readsPrec i r
 
 defaultUserInfoMap :: String -> String
 defaultUserInfoMap uinf = user++newpass
